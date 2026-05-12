@@ -10,7 +10,7 @@ const service = axios.create({
     // baseURL:'https://api.jinha.vip/'
 })
 
-//3、请求拦截器 ==> 前端给后端发送数据
+//3、请求拦截器 ==> 前端给 后端发送数据
 service.interceptors.request.use(config =>{
     // 原代码：从 localStorage 获取 token
     // config.headers.Authorization = localStorage.getItem("token");
