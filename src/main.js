@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import router from './router'
+import store from './store'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import ArcoVue from '@arco-design/web-vue';
@@ -15,6 +16,7 @@ const app = createApp(App)
 // 关闭生产提示
 app.config.productionTip = false
 
+app.use(store)
 app.use(ElementPlus)
 app.use(router)
 app.use(ArcoVue);

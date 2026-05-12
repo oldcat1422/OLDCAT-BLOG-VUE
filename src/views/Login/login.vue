@@ -29,7 +29,7 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import request from '../../utils/request'
+import request from '@/utils/request'
 export default {
 
   name: 'Login',
@@ -56,17 +56,21 @@ export default {
       } else if (this.user.password === '') {
         ElMessage.warning('请输入密码')
       } else {
-        const that = this
         request({
           url: '/public/user/login',
           method: 'post',
           data: this.user
-        }).then(function (res) {
-          // console.log("res是"+res.data.token);
+        }).then((res) => {
           if (res.code === 200) {
-            localStorage.setItem("token", res.data.token)
-            localStorage.setItem("role",res.data.role)
-            that.$router.push("/")
+            // 使用 Vuex 存储用户信息
+            this.$store.dispatch('user/login', {
+              token: res.data.token,
+              userInfo: {
+                role: Number(res.data.role),  // 将字符串 "9" 转换为数字 9
+                username: this.user.username
+              }
+            })
+            this.$router.push("/")
           } else {
             ElMessage.error('登录失败，用户名或密码错误')
           }
@@ -74,11 +78,10 @@ export default {
       }
     },
     register() {
-      const that = this
       request({
         url: '/user/test',
         method: 'post'
-      }).then(function (res) {
+      }).then((res) => {
         console.log(res);
       })
     }
@@ -222,6 +225,7 @@ form button {
   -webkit-transition-duration: 0.25s;
   transition-duration: 0.25s;
   margin: 0 auto 10px auto;
+  max-width: 90%;
 }
 
 form button:hover {

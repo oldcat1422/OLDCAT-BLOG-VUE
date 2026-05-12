@@ -53,3 +53,20 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+/* 全局移动端适配 */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+/* 移动端 el-dialog 自适应 */
+@media (max-width: 768px) {
+  .el-dialog {
+    --el-dialog-width: 92% !important;
+    margin: 8vh auto !important;
+  }
+}

@@ -30,7 +30,7 @@
 
 <script>
 import { ElMessage } from 'element-plus'
-import request from '../../utils/request'
+import request from '@/utils/request'
 export default {
   name: 'Register',
   data() {
@@ -211,6 +211,7 @@ form input {
   -webkit-transition-duration: 0.25s;
   transition-duration: 0.25s;
   font-weight: 300;
+  max-width: 90%;
 }
 
 form input:hover {
