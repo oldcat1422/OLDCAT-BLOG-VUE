@@ -1,5 +1,3 @@
-/* 路由配置文件 index.js */
-
 
 import { createWebHistory, createRouter } from 'vue-router'
 import store from '../store'
@@ -8,6 +6,7 @@ import store from '../store'
 const routes = [
     { path: '/', redirect: '/main/indexhome' },
     { path: '/main', redirect: '/main/indexhome' },
+    // { path: '/homeview', component: () => import('@/views/HomeView.vue') },
     {
         path: '/main',
         name: 'Main',
@@ -40,11 +39,6 @@ const routes = [
         path: '/login',
         name: 'Login',
         component: () => import('@/views/Login/login.vue')
-    },
-    {
-        path: '/register',
-        name: 'Register',
-        component: () => import('@/views/Register/register.vue')
     },
 ]
 

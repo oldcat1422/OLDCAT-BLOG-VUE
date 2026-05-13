@@ -20,7 +20,6 @@
         </p>
       </section>
 
-      <!-- 技能列表 -->
       <section class="card skills-card">
         <h2 class="section-title">核心技能</h2>
         <div class="skill-tags">
@@ -30,7 +29,6 @@
         </div>
       </section>
 
-      <!-- 个人里程碑/兴趣 -->
       <section class="card info-card">
         <h2 class="section-title"> 技术专长</h2>
         <ul class="info-list">
@@ -61,7 +59,7 @@ export default {
   methods: {
     getSkillList() {
       request({
-        url: '/syspara/getSkill',
+        url: '/syspara/public/getSkill',
         method: 'get',
       }).then((res) => {
         if (res.code === 200) {
@@ -71,7 +69,7 @@ export default {
     },
     getAboutMe() {
       request({
-        url: '/syspara/getAboutMe',
+        url: '/syspara/public/getAboutMe',
         method: 'get',
       }).then((res) => {
         if (res.code === 200 && res.data) {
