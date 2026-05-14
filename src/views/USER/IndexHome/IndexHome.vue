@@ -1,30 +1,56 @@
 <template>
   <div class="blog-container">
+    <!-- Hero 横幅区 -->
+    <section class="hero-section">
+      <div class="hero-bg"></div>
+      <div class="hero-particles">
+        <span v-for="n in 6" :key="n" class="particle" :style="particleStyle(n)"></span>
+      </div>
+      <div class="hero-content">
+        <h1 class="hero-title">OLDCATBLOG</h1>
+        <!-- <p class="hero-subtitle">分享技术 · 记录生活 · 持续成长</p> -->
+      </div>
+      <div class="hero-wave">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path d="M0,60 C360,120 720,0 1080,60 C1260,90 1380,80 1440,60 L1440,120 L0,120 Z" fill="#f5f7f5" />
+        </svg>
+      </div>
+    </section>
+
     <main class="main-content">
       <!-- 文章列表区 -->
       <section class="posts-grid">
         <div class="section-header">
-          <h3>最新文章</h3>
+          <h3>
+            最新文章
+          </h3>
+          <span class="article-count">共 {{ total }} 篇</span>
         </div>
         <div v-if="posts.length > 0" class="post-cards">
-          <article v-for="post in posts" :key="post.id" class="post-card">
+          <article v-for="(post, index) in posts" :key="post.id" class="post-card"
+            :style="{ animationDelay: `${index * 0.08}s` }">
             <div class="post-image">
-              <img :src="post.image || 'https://img.jinha.vip/tidai.png'" alt="文章图片"
-                style="width: 100%; height: 100%; object-fit: cover" />
+              <img :src="post.image || 'https://img.jinha.vip/tidai.png'" alt="文章图片" />
             </div>
             <div class="post-info">
-              <span class="post-category">{{ post.tag }}</span>
-              <h4>{{ post.title }}</h4>
+              <div class="post-meta-top">
+                <span class="post-category">{{ post.tag }}</span>
+                <span class="post-date">{{ post.time }}</span>
+              </div>
+              <h4 @click="readMore(post.id)">{{ post.title }}</h4>
               <p>{{ post.description }}</p>
               <div class="post-footer">
-                <span class="post-date">{{ post.time }}</span>
-                <button @click="readMore(post.id)" class="read-more">点击阅读</button>
+                <button @click="readMore(post.id)" class="read-more">
+                  阅读全文
+                  <span class="arrow">→</span>
+                </button>
               </div>
             </div>
           </article>
         </div>
         <div v-else class="no-results">
-          未找到相关文章
+          <span class="no-results-icon">📝</span>
+          <p>暂无文章，敬请期待...</p>
         </div>
         <!-- 分页组件 -->
         <div class="pagination-container">
@@ -36,20 +62,30 @@
 
       <!-- 侧边栏 -->
       <aside class="sidebar">
-        <div class="sidebar-widget">
-          <h4>个人简介</h4>
-          <p>我不是程序员。💻</p>
+
+        <!-- 公告栏 -->
+        <div class="sidebar-widget notice-widget">
+          <h4>
+            公告
+          </h4>
+          <p class="notice-text">欢迎来到 OLDCATBLOG，这里记录技术成长与生活感悟。</p>
         </div>
 
+        <!-- 文章分类 -->
         <div class="sidebar-widget">
-          <h4>文章分类</h4>
-          <ul>
+          <h4>
+            文章分类
+          </h4>
+          <ul class="category-list">
             <li v-for="cat in categories" :key="cat" @click="changeCategory(cat)"
               :class="{ active: selectedCategory === cat }">
-              {{ cat }}
+              <span class="cat-name">{{ cat }}</span>
+              <span class="cat-count">{{ cat === '全部' ? total : '' }}</span>
             </li>
           </ul>
         </div>
+
+
       </aside>
     </main>
   </div>
@@ -72,14 +108,23 @@ export default {
       total: 0
     };
   },
-  // Options API: computed
   computed: {
     filteredCategory() {
       return this.selectedCategory === '全部' ? null : this.selectedCategory;
     }
   },
-  // Options API: methods
   methods: {
+    particleStyle(n) {
+      const size = 4 + Math.random() * 8
+      return {
+        width: size + 'px',
+        height: size + 'px',
+        left: (10 + Math.random() * 80) + '%',
+        top: (10 + Math.random() * 60) + '%',
+        animationDelay: (n * 0.8) + 's',
+        animationDuration: (3 + Math.random() * 4) + 's',
+      }
+    },
     getAllArticlePage() {
       const that = this
       request({
@@ -97,18 +142,15 @@ export default {
         }
       })
     },
-    // 切换每页显示条数
     handleSizeChange(val) {
       this.pageSize = val;
       this.currentPage = 1;
       this.getAllArticlePage();
     },
-    // 切换页码
     handleCurrentChange(val) {
       this.currentPage = val;
       this.getAllArticlePage();
     },
-    // 切换分类
     changeCategory(cat) {
       this.selectedCategory = cat;
       this.currentPage = 1;
@@ -130,112 +172,264 @@ export default {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
   line-height: 1.6;
-  background-color: #f9f9f9;
+  background-color: #f5f7f5;
   min-height: 100vh;
-  margin: 0;
-  padding: 0;
 }
 
-
-
-/* 英雄区 */
+/* ====== Hero 横幅区 ====== */
 .hero-section {
-  background: linear-gradient(135deg, #42b883 0%, #35495e 100%);
-  color: white;
-  padding: 60px 20px;
+  position: relative;
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #1a2a3a 0%, #2d5a3f 40%, #42b883 100%);
+  z-index: 0;
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  animation: float-up linear infinite;
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translateY(-20px) scale(1);
+  }
+
+  80% {
+    opacity: 0.6;
+    transform: translateY(-80px) scale(0.8);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) scale(0);
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
   text-align: center;
+  color: #fff;
+  padding: 40px 20px;
 }
 
-.hero-content h2 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+.hero-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* 主体内容布局 */
+.hero-subtitle {
+  font-size: 1.15rem;
+  opacity: 0.9;
+  letter-spacing: 6px;
+  margin-bottom: 30px;
+}
+
+.hero-wave {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  z-index: 3;
+}
+
+.hero-wave svg {
+  display: block;
+  width: 100%;
+  height: 60px;
+}
+
+/* ====== 主体内容布局 ====== */
 .main-content {
-  max-width: 1100px;
+  max-width: 1140px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 40px;
-  padding: 40px 20px;
+  padding: 40px 24px;
 }
 
 /* 搜索和标题 */
 .section-header {
-  margin-bottom: 20px;
-}
-
-/* 文章卡片 */
-.post-cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 25px;
-}
-
-.post-card {
-  height: 200px;
-  background: #fff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  display: flex;
-  transition: transform 0.3s;
-}
-
-.post-card:hover {
-  transform: translateY(-5px);
-}
-
-.post-image {
-  width: 200px;
-  height: 100%;
-  flex-shrink: 0;
-}
-
-.post-info {
-  padding: 20px;
-  flex-grow: 1;
-}
-
-.post-category {
-  font-size: 0.8rem;
-  background: #eee;
-  padding: 2px 8px;
-  border-radius: 4px;
-  color: #666;
-}
-
-.post-info h4 {
-  margin: 10px 0;
-  font-size: 1.3rem;
-}
-
-.post-info p {
-  color: #777;
-  font-size: 0.95rem;
-}
-
-.post-footer {
-  margin-top: 15px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-header h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-icon {
+  font-size: 1.2rem;
+}
+
+.article-count {
+  font-size: 0.85rem;
+  color: #999;
+  background: #eee;
+  padding: 3px 12px;
+  border-radius: 20px;
+}
+
+/* ====== 文章卡片 ====== */
+.post-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+.post-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: card-fade-in 0.5s ease both;
+}
+
+@keyframes card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(66, 184, 131, 0.12);
+}
+
+.post-image {
+  width: 220px;
+  height: 200px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.post-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.post-card:hover .post-image img {
+  transform: scale(1.08);
+}
+
+.post-info {
+  padding: 20px 24px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-meta-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.post-category {
+  font-size: 0.75rem;
+  background: linear-gradient(135deg, #42b883, #35495e);
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-weight: 500;
 }
 
 .post-date {
-  font-size: 0.85rem;
-  color: #999;
+  font-size: 0.8rem;
+  color: #bbb;
+}
+
+.post-info h4 {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  color: #2c3e50;
+  cursor: pointer;
+  transition: color 0.3s;
+  line-height: 1.5;
+}
+
+.post-info h4:hover {
+  color: #42b883;
+}
+
+.post-info p {
+  color: #888;
+  font-size: 0.9rem;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-footer {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .read-more {
   background: none;
-  border: 1px solid #42b883;
+  border: 1.5px solid #42b883;
   color: #42b883;
-  padding: 5px 12px;
-  border-radius: 4px;
+  padding: 5px 16px;
+  border-radius: 20px;
   cursor: pointer;
+  font-size: 0.85rem;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.read-more .arrow {
+  transition: transform 0.3s;
 }
 
 .read-more:hover {
@@ -243,37 +437,160 @@ export default {
   color: white;
 }
 
-/* 侧边栏样式 */
+.read-more:hover .arrow {
+  transform: translateX(3px);
+}
+
+/* 无文章 */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.no-results-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.no-results p {
+  font-size: 1rem;
+}
+
+/* ====== 侧边栏样式 ====== */
 .sidebar-widget {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s;
+}
+
+.sidebar-widget:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-widget h4 {
   border-left: 4px solid #42b883;
-  padding-left: 10px;
-  margin-bottom: 15px;
+  padding-left: 12px;
+  margin-bottom: 16px;
+  font-size: 1rem;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.sidebar-widget ul {
+.widget-icon {
+  font-size: 1rem;
+}
+
+/* 个人简介卡片 */
+.profile-widget {
+  text-align: center;
+  padding: 30px 24px;
+}
+
+.profile-avatar {
+  margin-bottom: 16px;
+}
+
+.avatar-ring {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, #42b883, #35495e);
+  margin: 0 auto;
+}
+
+.avatar-ring img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+}
+
+.profile-name {
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  text-align: center;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.profile-bio {
+  color: #888;
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.profile-tags {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.mini-tag {
+  font-size: 0.75rem;
+  padding: 2px 10px;
+  border-radius: 10px;
+  background: #f0faf5;
+  color: #42b883;
+  border: 1px solid #d4f0e2;
+}
+
+/* 分类列表 */
+.category-list {
   list-style: none;
   padding: 0;
 }
 
-.sidebar-widget li {
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
+.category-list li {
+  padding: 10px 12px;
+  border-radius: 8px;
   cursor: pointer;
   color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.25s;
+  margin-bottom: 4px;
 }
 
-.sidebar-widget li:hover,
-.sidebar-widget li.active {
+.category-list li:hover {
+  background: #f0faf5;
   color: #42b883;
-  font-weight: bold;
+}
+
+.category-list li.active {
+  background: linear-gradient(135deg, #42b883, #38a373);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(66, 184, 131, 0.3);
+}
+
+.cat-count {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* 公告栏 */
+.notice-widget {
+  background: linear-gradient(135deg, #f0faf5 0%, #fff 100%);
+  border: 1px solid #d4f0e2;
+}
+
+.notice-text {
+  font-size: 0.9rem;
+  color: #777;
+  line-height: 1.7;
 }
 
 /* 分页样式 */
@@ -284,21 +601,26 @@ export default {
   padding: 20px 0;
 }
 
-/* 页脚 */
-.footer {
-  text-align: center;
-  padding: 40px;
-  background: #35495e;
-  color: white;
-  margin-top: 40px;
-}
-
-/* 响应式设计 */
+/* ====== 响应式设计 ====== */
 @media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+    letter-spacing: 3px;
+  }
+
+  .hero-section {
+    min-height: 260px;
+  }
+
   .main-content {
     grid-template-columns: 1fr;
-    padding: 20px 12px;
-    gap: 20px;
+    padding: 20px 16px;
+    gap: 24px;
   }
 
   .post-card {
@@ -308,11 +630,15 @@ export default {
 
   .post-image {
     width: 100%;
-    height: 150px;
+    height: 180px;
+  }
+
+  .post-info {
+    padding: 16px;
   }
 
   .post-info h4 {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
   }
 
   .pagination-container :deep(.el-pagination) {

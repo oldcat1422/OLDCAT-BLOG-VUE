@@ -2,7 +2,13 @@
   <div class="admin-layout">
     <!-- 移动端汉堡按钮 -->
     <div class="mobile-header" v-if="isMobile">
-      <el-button class="hamburger-btn" @click="drawerVisible = true" :icon="Expand" text />
+      <button class="mobile-menu-btn" @click="drawerVisible = true" aria-label="打开菜单">
+        <span class="menu-icon-box">
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+          <span class="menu-bar"></span>
+        </span>
+      </button>
       <h2 class="mobile-title">后台管理</h2>
       <el-dropdown @command="handleCommand">
         <span class="el-dropdown-link">
@@ -154,7 +160,7 @@
 </template>
 
 <script>
-import { House, Document, User, Setting, ArrowDown, Edit, PriceTag, HomeFilled, Expand } from '@element-plus/icons-vue'
+import { House, Document, User, Setting, ArrowDown, Edit, PriceTag, HomeFilled } from '@element-plus/icons-vue'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -167,8 +173,7 @@ export default {
     ArrowDown,
     Edit,
     PriceTag,
-    HomeFilled,
-    Expand
+    HomeFilled
   },
   data() {
     return {
@@ -245,9 +250,41 @@ export default {
   z-index: 100;
 }
 
-.hamburger-btn {
-  font-size: 20px;
-  padding: 4px;
+/* 移动端汉堡按钮 */
+.mobile-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menu-icon-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #f0faf5;
+  border: 1px solid #d4f0e2;
+  transition: all 0.3s ease;
+  gap: 5px;
+}
+
+.menu-icon-box:active {
+  transform: scale(0.92);
+}
+
+.menu-bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #42b883;
+  border-radius: 2px;
+  transition: all 0.3s ease;
 }
 
 .mobile-title {

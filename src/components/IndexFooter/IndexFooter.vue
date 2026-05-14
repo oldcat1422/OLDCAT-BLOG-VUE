@@ -1,5 +1,6 @@
 <template>
   <footer class="footer">
+    <div class="footer-gradient-line"></div>
     <div class="footer-content">
       <div class="footer-section">
         <h3>关于本站</h3>
@@ -50,41 +51,72 @@ export default {
 
 <style scoped>
 .footer {
-  background: #2c3e50;
+  background: #1a2332;
   color: #ecf0f1;
   padding: 3rem 0 1.5rem;
   margin-top: auto;
+  position: relative;
+}
+
+.footer-gradient-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #42b883, #35495e, #42b883);
+  background-size: 200% 100%;
+  animation: gradient-shift 4s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 .footer-content {
-  max-width: 1100px;
+  max-width: 1140px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
-  padding: 0 20px;
+  padding: 0 24px;
   margin-bottom: 2rem;
 }
 
 .footer-section h3 {
   color: #42b883;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   margin-bottom: 1rem;
   font-weight: 600;
+  position: relative;
+  padding-bottom: 8px;
+}
+
+.footer-section h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 30px;
+  height: 2px;
+  background: #42b883;
+  border-radius: 2px;
 }
 
 .footer-section p {
-  color: #bdc3c7;
+  color: #8899aa;
   line-height: 1.8;
   margin: 0.5rem 0;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .footer-bottom {
-  max-width: 1100px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 1.5rem 20px;
-  border-top: 1px solid #34495e;
+  padding: 1.5rem 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -93,18 +125,18 @@ export default {
 }
 
 .copyright {
-  color: #95a5a6;
-  font-size: 0.9rem;
+  color: #5a6b7c;
+  font-size: 0.85rem;
 }
 
 .icp-info {
-  color: #95a5a6;
-  font-size: 0.9rem;
+  color: #5a6b7c;
+  font-size: 0.85rem;
 }
 
 .icp-info span {
   padding-left: 1rem;
-  border-left: 1px solid #34495e;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
   margin-left: 1rem;
 }
 
@@ -113,6 +145,11 @@ export default {
   vertical-align: middle;
   margin: 0 4px;
   cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.ypy-logo:hover {
+  opacity: 0.8;
 }
 
 @media (max-width: 768px) {

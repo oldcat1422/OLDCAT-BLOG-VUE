@@ -40,6 +40,11 @@ const routes = [
         name: 'Login',
         component: () => import('@/views/Login/login.vue')
     },
+    {
+        path: '/ai',
+        name: 'AI',
+        component: () => import('@/views/chatgpt.vue')
+    },
 ]
 
 // 创建路由实例

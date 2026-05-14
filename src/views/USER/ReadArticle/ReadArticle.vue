@@ -1,9 +1,5 @@
 <template>
   <div class="blog-container">
-    <!-- 文章封面 -->
-    <div class="article-cover">
-      <img :src="article.image || 'https://img.jinha.vip/tidai.png'" alt="文章封面" />
-    </div>
     <main class="main-content">
       <!-- 文章内容区 -->
       <section class="article-section">
@@ -23,10 +19,6 @@
 
       <!-- 侧边栏 -->
       <aside class="sidebar">
-        <div class="sidebar-widget">
-          <h4>个人简介</h4>
-          <p>我不是程序员。💻</p>
-        </div>
         <div class="sidebar-widget">
           <h4>文章推荐</h4>
           <ul class="recommend-list">
@@ -102,7 +94,7 @@ export default {
         url: '/public/article/addView?articleId=' + this.id,
         method: 'post'
       }).then(function (res) {
-        console.log("id为"+id+"的文章浏览量已加1");
+        console.log("id为"+that.id+"的文章浏览量已加1");
       })
     }
   },
@@ -133,7 +125,7 @@ export default {
 </script>
 
 <style scoped>
-/* 基础样式 */
+/* ===== 基础样式 ===== */
 .blog-container {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #333;
@@ -145,7 +137,7 @@ export default {
   overflow-x: hidden;
 }
 
-/* 文章封面 */
+/* ===== 文章封面 ===== */
 .article-cover {
   width: 100vw;
   height: 40vh;
@@ -165,9 +157,7 @@ export default {
   display: block;
 }
 
-
-
-/* 主体内容布局 */
+/* ===== 主体内容布局 ===== */
 .main-content {
   max-width: 1100px;
   margin: 0 auto;
@@ -177,7 +167,7 @@ export default {
   padding: 40px 20px;
 }
 
-/* 文章头部 */
+/* ===== 文章头部 ===== */
 .article-header {
   background: #fff;
   border-radius: 8px;
@@ -190,20 +180,78 @@ export default {
   font-size: 2rem;
   margin: 15px 0;
   color: #333;
+  word-break: break-word;
 }
 
-/* 文章内容 */
+/* ===== 文章内容 ===== */
 .article-content {
+  width: 100%;
   background: #fff;
   border-radius: 8px;
-  /* padding: 30px; */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   margin-bottom: 40px;
+  overflow: hidden;
 }
 
+/* mavon-editor 内容区域适配 */
+.article-content :deep(.v-show-content),
+.article-content :deep(.v-note-panel),
+.article-content :deep(.v-note-edit),
+.article-content :deep(.v-note-view) {
+  width: 100% !important;
+  max-width: 100% !important;
+}
 
+/* mavon-editor 内部滚动容器 */
+.article-content :deep(.v-note-panel) {
+  box-sizing: border-box !important;
+}
 
-/* 文章卡片 */
+/* 文章内容中的图片自适应 */
+.article-content :deep(.v-show-content img),
+.article-content :deep(.markdown-body img) {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 1em auto;
+  border-radius: 4px;
+}
+
+/* 文章内容中的代码块自适应 */
+.article-content :deep(.v-show-content pre),
+.article-content :deep(.markdown-body pre) {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.article-content :deep(.v-show-content code),
+.article-content :deep(.markdown-body code) {
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+/* 文章内容中的表格自适应 */
+.article-content :deep(.v-show-content table),
+.article-content :deep(.markdown-body table) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 文章内容中的视频/嵌入内容自适应 */
+.article-content :deep(.v-show-content iframe),
+.article-content :deep(.v-show-content video),
+.article-content :deep(.markdown-body iframe),
+.article-content :deep(.markdown-body video) {
+  max-width: 100% !important;
+  height: auto;
+}
+
+/* ===== 文章卡片（列表页用，保留以防复用） ===== */
 .post-card {
   background: #fff;
   border-radius: 8px;
@@ -250,6 +298,8 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .post-date {
@@ -278,7 +328,7 @@ export default {
   color: white;
 }
 
-/* 侧边栏样式 */
+/* ===== 侧边栏样式 ===== */
 .sidebar-widget {
   background: white;
   padding: 20px;
@@ -352,7 +402,7 @@ export default {
   white-space: nowrap;
 }
 
-/* 页脚 */
+/* ===== 页脚 ===== */
 .footer {
   text-align: center;
   padding: 40px;
@@ -367,10 +417,67 @@ export default {
   padding: 0 20px;
 }
 
-/* 响应式设计 */
+/* ===== 响应式设计 ===== */
+
+/* 平板（≤1024px）：侧边栏缩窄 */
+@media (max-width: 1024px) {
+  .main-content {
+    grid-template-columns: 1fr 260px;
+    gap: 30px;
+    padding: 30px 16px;
+  }
+
+  .article-header {
+    padding: 24px;
+  }
+
+  .article-header h1 {
+    font-size: 1.75rem;
+  }
+}
+
+/* 小平板（≤900px）：侧边栏更窄 */
+@media (max-width: 900px) {
+  .main-content {
+    grid-template-columns: 1fr 220px;
+    gap: 24px;
+  }
+
+  .sidebar-widget {
+    padding: 16px;
+  }
+}
+
+/* 手机（≤768px）：单栏布局 */
 @media (max-width: 768px) {
   .main-content {
     grid-template-columns: 1fr;
+    gap: 0;
+    padding: 16px 12px;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .article-header {
+    padding: 20px 16px;
+    border-radius: 6px;
+  }
+
+  .article-header h1 {
+    font-size: 1.35rem;
+    margin: 10px 0;
+  }
+
+  .article-content {
+    border-radius: 6px;
+    margin-bottom: 24px;
+  }
+
+  .article-content :deep(.v-show-content) {
+    padding: 16px !important;
+    font-size: 15px !important;
   }
 
   .post-card {
@@ -382,8 +489,34 @@ export default {
     height: 150px;
   }
 
+  .post-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* 小屏手机（≤480px） */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 10px 8px;
+  }
+
+  .article-header {
+    padding: 16px 12px;
+    border-radius: 4px;
+  }
+
   .article-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.15rem;
+  }
+
+  .article-content :deep(.v-show-content) {
+    padding: 12px !important;
+    font-size: 14px !important;
+  }
+
+  .article-cover {
+    height: 30vh;
   }
 }
 </style>

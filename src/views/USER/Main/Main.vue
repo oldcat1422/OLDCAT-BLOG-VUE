@@ -30,5 +30,13 @@ export default {
 </script>
 
 <style scoped>
+.main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
+.content-container {
+    flex: 1;
+}
 </style>

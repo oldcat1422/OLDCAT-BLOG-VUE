@@ -5,35 +5,31 @@
         <div class="card-header">
           <span>系统参数管理</span>
           <el-button type="primary" size="small" @click="showAddDialog">
-            <el-icon><Plus /></el-icon>
+            <el-icon>
+              <Plus />
+            </el-icon>
             添加参数
           </el-button>
         </div>
       </template>
       <div class="table-wrapper">
-      <el-table :data="paraList" style="width: 100%" border stripe>
-        <el-table-column prop="paraId" label="ID" width="80" align="center" />
-        <el-table-column prop="paraName" label="参数名称" min-width="150" />
-        <el-table-column prop="paraVal" label="参数值" min-width="200" />
-        <el-table-column prop="paraDescription" label="描述" min-width="200" />
-        <el-table-column label="操作" width="200" align="center">
-          <template #default="scope">
-            <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <el-table :data="paraList" style="width: 100%" border stripe>
+          <el-table-column prop="paraId" label="ID" width="80" align="center" />
+          <el-table-column prop="paraName" label="参数名称" min-width="150" />
+          <el-table-column prop="paraVal" label="参数值" min-width="200" />
+          <el-table-column prop="paraDescription" label="描述" min-width="200" />
+          <el-table-column label="操作" width="200" align="center">
+            <template #default="scope">
+              <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
       <div class="pagination-container">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :page-sizes="[10, 20, 50, 100]"
-          :total="total"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        />
+        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :page-sizes="[10, 20, 50, 100]"
+          :total="total" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange"
+          @current-change="handleCurrentChange" />
       </div>
     </el-card>
 
@@ -44,7 +40,7 @@
           <el-input v-model="paraForm.paraName" placeholder="请输入参数名称" />
         </el-form-item>
         <el-form-item label="参数值">
-          <el-input v-model="paraForm.paraVal" placeholder="请输入参数值" />
+          <el-input v-model="paraForm.paraVal" placeholder="请输入参数值" type="textarea" />
         </el-form-item>
         <el-form-item label="描述">
           <el-input v-model="paraForm.paraDescription" type="textarea" :rows="3" placeholder="请输入描述" />
@@ -155,7 +151,7 @@ export default {
             this.$message.error(res.message || '删除失败');
           }
         });
-      }).catch(() => {});
+      }).catch(() => { });
     },
     // 保存参数（新增/编辑）
     handleSave() {
