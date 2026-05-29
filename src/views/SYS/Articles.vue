@@ -30,7 +30,7 @@
         <el-table-column prop="pageViews" label="浏览量" width="100" align="center" />
         <el-table-column label="操作" width="180" align="center" fixed="right">
           <template #default="scope">
-            <el-button size="small" type="warning" icon="Edit" @click="editArticle(scope.row)">修改</el-button>
+            <el-button size="small" type="success" icon="Edit" @click="editArticle(scope.row)">修改</el-button>
             <el-button size="small" type="primary" icon="Setting" @click="openSetDialog(scope.row)">设置</el-button>
           </template>
         </el-table-column>

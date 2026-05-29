@@ -42,7 +42,56 @@
             maxlength="300" show-word-limit class="description-input" />
         </div>
       </div>
+
+      <!-- 文章封面 -->
+      <div class="form-row" style="margin-top: 20px;">
+        <div class="form-item" style="flex: 1;">
+          <label class="form-label">
+            <svg class="label-icon" viewBox="0 0 24 24" width="16" height="16">
+              <path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+            </svg>
+            文章封面
+          </label>
+          <div class="cover-upload-wrapper">
+            <el-upload
+              ref="coverUpload"
+              :http-request="handleCoverUpload"
+              list-type="picture-card"
+              :limit="1"
+              :multiple="false"
+              :on-exceed="handleCoverExceed"
+              :on-remove="handleCoverRemove"
+              :on-success="handleCoverSuccess"
+              :file-list="coverFileList"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+            >
+              <el-icon><Plus /></el-icon>
+              <template #file="{ file }">
+                <div>
+                  <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+                  <span class="el-upload-list__item-actions">
+                    <span class="el-upload-list__item-preview" @click="handleCoverPreview(file.url)">
+                      <el-icon><ZoomIn /></el-icon>
+                    </span>
+                    <span class="el-upload-list__item-delete" @click="handleCoverRemove">
+                      <el-icon><Delete /></el-icon>
+                    </span>
+                  </span>
+                </div>
+              </template>
+            </el-upload>
+            <div class="cover-tip" v-if="!article.image">
+              <p>支持 JPG / PNG / WebP，建议尺寸 1200×630</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- 封面图片预览 -->
+    <el-dialog v-model="coverPreviewVisible" title="封面预览" width="40%" top="5vh" destroy-on-close>
+      <img :src="coverPreviewUrl" style="width: 100%; border-radius: 8px;" alt="封面预览" />
+    </el-dialog>
 
     <!-- 编辑器区域卡片 -->
     <div class="editor-card">
@@ -64,6 +113,7 @@
 <script>
 import request from '../../utils/request'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Plus, ZoomIn, Delete } from '@element-plus/icons-vue'
 export default {
   data() {
     return {
@@ -74,7 +124,12 @@ export default {
         neirong: '',
         tag: null,
         description: '',
+        image: '',
       },
+      // 封面上传
+      coverFileList: [],
+      coverPreviewVisible: false,
+      coverPreviewUrl: '',
       //往后端传的对象格式的文章
       addarticle: {
         neirong: '',
@@ -92,6 +147,11 @@ export default {
     };
   },
   computed: {
+  },
+  components: {
+    Plus,
+    ZoomIn,
+    Delete
   },
   methods: {
     $imgAdd(pos, $file) {
@@ -111,6 +171,43 @@ export default {
       }).catch(() => {
         this.$message.error('图片上传失败');
       });
+    },
+    // 封面上传
+    handleCoverUpload(options) {
+      const formdata = new FormData();
+      formdata.append('file', options.file);
+      request({
+        url: '/up/upload',
+        method: 'post',
+        data: formdata,
+        headers: { 'Content-Type': 'multipart/form-data' }
+      }).then((res) => {
+        if (res.code === 200) {
+          this.article.image = res.data.url;
+          this.coverFileList = [{ name: 'cover', url: res.data.url }];
+          options.onSuccess(res.data, options.file);
+        } else {
+          options.onError(new Error(res.message || '封面上传失败'));
+          ElMessage.error(res.message || '封面上传失败');
+        }
+      }).catch((err) => {
+        options.onError(err);
+        ElMessage.error('封面上传失败');
+      });
+    },
+    handleCoverRemove() {
+      this.article.image = '';
+      this.coverFileList = [];
+    },
+    handleCoverExceed() {
+      ElMessage.warning('只能上传一张封面图片');
+    },
+    handleCoverSuccess(response, file, fileList) {
+      this.coverFileList = fileList;
+    },
+    handleCoverPreview(url) {
+      this.coverPreviewUrl = url;
+      this.coverPreviewVisible = true;
     },
     save() {
       ElMessageBox.confirm(
@@ -150,6 +247,8 @@ export default {
                 that.article.neirong = ''
                 that.article.tag = null
                 that.article.description = ''
+                that.article.image = ''
+                that.coverFileList = []
               } else {
                 that.$message.error(res.message)
               }
@@ -203,8 +302,12 @@ export default {
             neirong: data.neirong,
             tag: data.tag,
             description: data.description,
+            image: data.image || '',
             state: data.state,
           };
+          if (data.image) {
+            this.coverFileList = [{ name: 'cover', url: data.image }];
+          }
           this.isEdit = true;
         } else {
           this.$message.error('获取文章失败');
@@ -308,6 +411,71 @@ export default {
 .tag-select,
 .description-input {
   width: 100%;
+}
+
+/* 封面上传区域 */
+.cover-upload-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cover-upload-wrapper :deep(.el-upload--picture-card) {
+  width: 200px;
+  height: 120px;
+  border: 2px dashed #d9d9d9;
+  border-radius: 10px;
+  transition: all 0.3s;
+  background: #fafbfc;
+}
+
+.cover-upload-wrapper :deep(.el-upload--picture-card:hover) {
+  border-color: #42b883;
+  background: #f0faf5;
+}
+
+.cover-upload-wrapper :deep(.el-upload-list--picture-card) {
+  --el-upload-list-picture-card-size: 200px;
+  height: 120px;
+}
+
+.cover-upload-wrapper :deep(.el-upload-list__item) {
+  width: 200px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0;
+}
+
+.cover-upload-wrapper :deep(.el-upload-list__item-thumbnail) {
+  object-fit: cover;
+}
+
+.cover-tip {
+  flex: 1;
+  min-width: 180px;
+  padding-top: 6px;
+}
+
+.cover-tip p {
+  margin: 0;
+  font-size: 13px;
+  color: #999;
+  line-height: 1.6;
+}
+
+/* 上传图标大小 */
+.cover-upload-wrapper :deep(.el-icon--upload) {
+  font-size: 28px;
+  color: #bbb;
+}
+
+/* Element Plus 预览弹窗中的图片 */
+:deep(.el-dialog__body img) {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 /* 编辑器区域卡片 */
@@ -626,6 +794,23 @@ export default {
 
   :deep(.el-input__count) {
     font-size: 11px !important;
+  }
+
+  /* 封面上传移动端适配 */
+  .cover-upload-wrapper :deep(.el-upload--picture-card),
+  .cover-upload-wrapper :deep(.el-upload-list__item) {
+    width: 100% !important;
+    height: 140px !important;
+  }
+
+  .cover-upload-wrapper :deep(.el-upload-list--picture-card) {
+    --el-upload-list-picture-card-size: 140px !important;
+    width: 100%;
+  }
+
+  .cover-tip {
+    width: 100%;
+    min-width: unset;
   }
 }
 </style>

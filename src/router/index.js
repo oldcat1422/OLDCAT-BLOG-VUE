@@ -13,6 +13,7 @@ const routes = [
         component: () => import('@/views/USER/Main/Main.vue'),
         children: [
             { path: 'indexhome', component: () => import('@/views/USER/IndexHome/IndexHome.vue') },
+            { path: 'read', component: () => import('@/views/USER/Read/Read.vue') },
             { path: 'readarticle/:id', component: () => import('@/views/USER/ReadArticle/ReadArticle.vue') },
             { path: 'guidang', component: () => import('@/views/USER/GuiDang/GuiDang.vue') },
             { path: 'aboutme', component: () => import('@/views/USER/AboutMe/AboutMe.vue') },

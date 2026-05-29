@@ -46,6 +46,7 @@ export default {
       editable: false,
       defaultOpen: 'preview',
       toolbarsFlag: false,
+      navigation: true,
       
       // 相关文章
       relatedArticles: [],
@@ -329,6 +330,23 @@ export default {
 }
 
 /* ===== 侧边栏样式 ===== */
+.sidebar {
+  position: sticky;
+  top: 80px;
+  align-self: start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #ddd;
+  border-radius: 2px;
+}
+
 .sidebar-widget {
   background: white;
   padding: 20px;

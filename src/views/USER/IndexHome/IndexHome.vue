@@ -68,7 +68,7 @@
           <h4>
             公告
           </h4>
-          <p class="notice-text">欢迎来到 OLDCATBLOG，这里记录技术成长与生活感悟。</p>
+          <p class="notice-text">世界这么大，我该去哪儿找你</p>
         </div>
 
         <!-- 文章分类 -->
